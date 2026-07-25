@@ -64,3 +64,8 @@ docker-compose.override.yml
 # Outros temporários
 *.swp
 *~
+
+.phpunit.cache/
+.phpunit.result.cache
+coverage.xml
+junit.xml

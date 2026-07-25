@@ -1,43 +1,30 @@
 {
-    "name":  "omegaalfa/lazy-object",
-    "description":  "Small facade for PHP 8.4 native lazy proxies and lazy ghosts",
-    "type":  "library",
-    "license":  "proprietary",
-    "keywords":  [
-                     "php",
-                     "lazy-object",
-                     "lazy-proxy",
-                     "lazy-ghost",
-                     "reflection"
-                 ],
-    "authors":  [
-                    {
-                        "name":  "wrt",
-                        "email":  "webdesenvolver.agenda@gmail.com"
-                    }
-                ],
-    "require":  {
-                    "php":  "\u003e=8.4"
-                },
-    "require-dev":  {
-                        "phpstan/phpstan":  "^2.1",
-                        "phpunit/phpunit":  "^12.5"
-                    },
-    "autoload":  {
-                     "psr-4":  {
-                                   "Omegaalfa\\LazyObject\\":  "src/"
-                               }
-                 },
-    "autoload-dev":  {
-                         "psr-4":  {
-                                       "Omegaalfa\\LazyObject\\Tests\\":  "tests/"
-                                   }
-                     },
-    "scripts":  {
-                    "test":  "phpunit",
-                    "coverage":  "phpunit --coverage-text",
-                    "phpstan":  "phpstan analyse --no-progress"
-                },
-    "minimum-stability":  "dev",
-    "prefer-stable":  true
+  "name": "omegaalfa/lazy-object",
+  "description": "Small typed facade for PHP 8.4 native lazy proxies and lazy ghosts",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["php", "lazy-object", "lazy-proxy", "lazy-ghost", "reflection"],
+  "authors": [{"name": "wrt", "email": "webdesenvolver.agenda@gmail.com"}],
+  "require": {"php": "^8.4"},
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^12.5"
+  },
+  "autoload": {"psr-4": {"Omegaalfa\\LazyObject\\": "src/"}},
+  "autoload-dev": {"psr-4": {"Omegaalfa\\LazyObject\\Tests\\": "tests/"}},
+  "scripts": {
+    "test": "phpunit --no-coverage",
+    "coverage": "phpunit --coverage-text",
+    "analyse": "phpstan analyse --no-progress",
+    "style": [
+      "php -l src/LazyObject.php",
+      "php -l tests/LazyObjectTest.php",
+      "php -l tests/Type/TypeService.php",
+      "php -l tests/Type/Inference.php",
+      "php -l benchmarks/reflection-cache.php"
+    ],
+    "benchmark": "php -d opcache.enable_cli=0 benchmarks/reflection-cache.php",
+    "check": ["@style", "@test", "@analyse"]
+  },
+  "prefer-stable": true
 }
