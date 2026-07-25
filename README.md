@@ -37,6 +37,98 @@ composer require omegaalfa/lazy-object
 | 🪪 Identidade | O proxy mantém identidade própria e delega para uma instância real | O próprio objeto é inicializado in-place |
 | 🎯 Uso típico | Factory, container ou criação delegada | Hidratação ou inicialização in-place |
 
+### 🔀 Quando usar um proxy
+
+O proxy é um objeto lazy que, no primeiro acesso que exige inicialização, chama uma **factory**. Essa factory cria e retorna outra instância, chamada de instância real. Depois disso, as operações feitas no proxy são delegadas para ela.
+
+```text
+Proxy criado → primeiro acesso → factory executada → instância real criada → operações delegadas
+```
+
+✅ **Cenários recomendados:**
+
+- criação controlada por um container de dependências;
+- serviços cuja construção precisa ser totalmente delegada;
+- conexões, clientes HTTP, mailers e gateways caros;
+- factories que podem escolher dinamicamente a implementação real;
+- integração com componentes que já sabem construir o serviço completo;
+- quando é importante separar o objeto exposto da instância que executa o trabalho.
+
+⚠️ **Considere as seguintes características:**
+
+- o proxy e a instância real têm identidades diferentes;
+- a factory precisa retornar um objeto aceito pelas regras nativas do PHP;
+- retornar o próprio proxy ou um objeto incompatível é rejeitado pelo engine;
+- o proxy normalmente possui mais overhead que um ghost;
+- regras de herança entre proxy e instância real são verificadas pelo PHP.
+
+### 👻 Quando usar um ghost
+
+O ghost é criado sem executar o construtor. No primeiro acesso que exige inicialização, o **initializer configura o próprio objeto in-place**, atribuindo propriedades ou chamando seu construtor.
+
+```text
+Ghost criado → primeiro acesso → initializer executado → mesmo objeto inicializado
+```
+
+✅ **Cenários recomendados:**
+
+- hidratação tardia de entidades e modelos;
+- carregamento sob demanda a partir de banco de dados ou armazenamento;
+- objetos cuja identidade precisa permanecer a mesma;
+- inicialização tardia por atribuição de propriedades;
+- classes cujo construtor pode ser chamado pelo initializer;
+- objetos de domínio que devem ser preenchidos in-place.
+
+⚠️ **Considere as seguintes características:**
+
+- o initializer não cria nem retorna uma instância substituta;
+- o retorno esperado é `void`;
+- o próprio ghost recebe o estado inicializado;
+- o initializer precisa deixar o objeto em um estado válido;
+- classes sem propriedades de instância podem não permanecer lazy.
+
+### 🧭 Guia rápido de decisão
+
+| Se você precisa de... | Escolha |
+|---|:---:|
+| 🏭 Delegar a criação completa para uma factory | **Proxy** |
+| 📦 Resolver o serviço por um container | **Proxy** |
+| 🔀 Escolher a instância real dinamicamente | **Proxy** |
+| 🪪 Preservar a identidade do objeto | **Ghost** |
+| 💧 Hidratar propriedades posteriormente | **Ghost** |
+| 🧱 Executar o construtor no próprio objeto lazy | **Ghost** |
+| 🗄️ Carregar uma entidade sob demanda | **Ghost** |
+
+> [!TIP]
+> Se a callback deve **retornar outro objeto**, use um **proxy**. Se a callback deve **configurar o objeto recebido**, use um **ghost**.
+
+### 🔬 Diferenças de identidade
+
+```php
+$proxy = LazyObject::proxy(
+    Service::class,
+    static fn (Service $_proxy): object => new Service('real'),
+);
+// O proxy mantém sua identidade e delega para outra instância.
+
+$ghost = LazyObject::ghost(
+    Service::class,
+    static fn (Service $ghost): void => $ghost->__construct('in-place'),
+);
+// O próprio $ghost é inicializado; sua identidade é preservada.
+```
+
+### ⏱️ O que ambos têm em comum
+
+Proxy e ghost compartilham o ciclo de vida básico oferecido pelo PHP:
+
+- são criados sem executar imediatamente a callback;
+- inicializam quando uma operação observa ou modifica seu estado;
+- executam a callback somente uma vez após uma inicialização bem-sucedida;
+- restauram o estado lazy quando a callback lança uma exceção;
+- normalmente inicializam antes de clonagem ou serialização;
+- continuam sendo `instanceof` da classe solicitada;
+- dependem das regras nativas de lazy objects do PHP 8.4.
 ## 🚀 Exemplos
 
 ### 1. 🔀 Lazy proxy completo
