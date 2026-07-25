@@ -1,71 +1,56 @@
-# IDEs and editors
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
-
-# Composer dependencies
+# Dependencies
 /vendor/
-
-# Composer files
 composer.lock
 
-# Logs and cache
+# Test and analysis caches
+/.phpunit.cache/
+/.phpunit.result.cache
+/.phpstan/
+/.psalm/
+/tests/_output/
+
+# Coverage and test reports
+/coverage/
+/coverage.xml
+/junit.xml
+*.cov
+*.lcov
+
+# Local scratch files
+/test.php
+/cache/
+/tmp/
+/temp/
 *.log
-cache/
-tmp/
-temp/
 
-# Sistema operacional
-.DS_Store
-Thumbs.db
-
-# Arquivos de configuração de ambiente
+# Environment files
 .env
 .env.local
 .env.*.local
+.env.docker
+docker-compose.override.yml
 
-# PHPUnit
-/phpunit.xml
-/phpunit.xml.dist
-/tests/_output/
+# IDEs and editors
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*~
 
-# Arquivos gerados
+# Build artifacts
+/build/
+/dist/
+*.phar
 autoload.php
 autoload.php.dist
 dump-autoload.php
 
-# Arquivos de build / artefatos
-build/
-dist/
-*.phar
-
-# Arquivos específicos de WSL
-*/lost+found/
-
-# Arquivos de cobertura de testes
-coverage/
-*.cov
-*.lcov
-
-# Arquivos de IDE para PHPStan/Psalm
-/.phpstan/
-/.psalm/
-
-# Arquivos de lock de outros gerenciadores (se houver)
-./composer.lock
+# Other package managers
 package-lock.json
 yarn.lock
 
-# Arquivos específicos de Docker
-docker-compose.override.yml
-.env.docker
-
-# Outros temporários
-*.swp
-*~
-
-.phpunit.cache/
-.phpunit.result.cache
-coverage.xml
-junit.xml
+# Operating systems
+.DS_Store
+Thumbs.db
+*/lost+found/
